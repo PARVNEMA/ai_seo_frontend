@@ -6,15 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { 
-  Globe, 
-  CheckCircle, 
-  XCircle, 
-  Search, 
-  Link as LinkIcon, 
-  Image as ImageIcon, 
-  FileText, 
-  AlertTriangle, 
+import {
+  Globe,
+  CheckCircle,
+  XCircle,
+  Search,
+  Link as LinkIcon,
+  Image as ImageIcon,
+  FileText,
+  AlertTriangle,
   StopCircle,
   Play,
   PlayCircle,
@@ -44,8 +44,15 @@ export default function LiveCrawlerPage() {
   useEffect(() => {
     if (!jobId) return;
 
+    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+    if (!token) {
+      toast.error("Authentication token not found. Please log in again.");
+      setStatus("failed");
+      return;
+    }
+
     // Use ws for localhost:8000 since api base is http://localhost:8000/api/v1
-    const wsUrl = `ws://localhost:8000/api/v1/ws/crawls/${jobId}`;
+    const wsUrl = `ws://localhost:8000/api/v1/ws/crawls/${jobId}?token=${encodeURIComponent(token)}`;
     ws.current = new WebSocket(wsUrl);
 
     ws.current.onopen = () => {
@@ -55,7 +62,29 @@ export default function LiveCrawlerPage() {
     ws.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        setResults((prev) => [...prev, data]);
+        console.log("Received WebSocket message:", data);
+        // Handle backend control/status messages
+        if (data.status) {
+          if (data.status === "stopped") {
+            setStatus("stopped");
+          } else if (data.status === "completed") {
+            setStatus("completed");
+          }
+          return;
+        }
+
+        // Allow rendering if it's an SEO result (has title or metrics) even if url is missing
+        if (!data.url && !data.title && typeof data.total_images === 'undefined') return;
+
+        const entryUrl = data.url || "";
+
+        // Prepend new results so the newest pages show at the top of the page continuously
+        setResults((prev) => {
+          // Avoid duplicate entries if the crawler revisits a page
+          if (entryUrl && prev.some((p) => p.url === entryUrl)) return prev;
+          if (!entryUrl && data.title && prev.some((p) => p.title === data.title)) return prev;
+          return [{...data, url: entryUrl}, ...prev];
+        });
       } catch (err) {
         console.error("Failed to parse websocket message", err);
       }
@@ -141,10 +170,10 @@ export default function LiveCrawlerPage() {
 
             <div className="flex gap-2 w-full md:w-auto">
               {status === "running" ? (
-                <Button 
-                  variant="destructive" 
-                  onClick={stopCrawl} 
-                  size="lg" 
+                <Button
+                  variant="destructive"
+                  onClick={stopCrawl}
+                  size="lg"
                   className="h-auto py-3.5 px-6 text-md font-semibold rounded-xl flex-1 md:flex-none cursor-pointer"
                 >
                   <StopCircle className="mr-2 h-4.5 w-4.5" />
@@ -211,9 +240,13 @@ export default function LiveCrawlerPage() {
                     {res.title || "Untitled Page"}
                   </CardTitle>
                   <CardDescription className="truncate text-xs">
-                    <a href={res.url} target="_blank" rel="noreferrer" className="hover:underline text-primary/80">
-                      {res.url}
-                    </a>
+                    {res.url ? (
+                      <a href={res.url} target="_blank" rel="noreferrer" className="hover:underline text-primary/80">
+                        {res.url}
+                      </a>
+                    ) : (
+                      <span className="text-muted-foreground italic">URL unavailable</span>
+                    )}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-4 flex-1">
