@@ -6,17 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { 
-  Globe, 
-  Search, 
-  Key, 
-  Image as ImageIcon, 
-  Link as LinkIcon, 
-  FileText, 
-  Gauge, 
-  Target, 
-  Lightbulb, 
-  AlertCircle, 
+import {
+  Globe,
+  Search,
+  Key,
+  Image as ImageIcon,
+  Link as LinkIcon,
+  FileText,
+  Gauge,
+  Target,
+  Lightbulb,
+  AlertCircle,
   ArrowRight,
   TrendingUp,
   BookOpen,
@@ -85,7 +85,7 @@ export default function DashboardPage() {
     try {
       const payload: Record<string, string> = { url };
       if (keyword) payload.keyword = keyword;
-      const response = await api.post("/analyze-graph", payload);
+      const response = await api.post("/seo/analyze-graph", payload);
       setResult(response.data);
       toast.success("Analysis complete!");
     } catch (error) {
@@ -99,15 +99,15 @@ export default function DashboardPage() {
 
   const calculateOverallScore = (data: typeof mockData) => {
     if (!data) return 0;
-    
+
     let score = 100;
-    
+
     // Deduct for missing alt images
     if (data.technical?.total_images > 0) {
       const missingAltRatio = data.technical.missing_alt_images / data.technical.total_images;
       score -= (missingAltRatio * 15);
     }
-    
+
     // Deduct for broken links
     if (data.technical?.total_links > 0) {
       const brokenLinksRatio = data.technical.broken_links / data.technical.total_links;
@@ -115,11 +115,11 @@ export default function DashboardPage() {
     } else if (data.technical?.broken_links > 0) {
       score -= 15;
     }
-    
+
     // Readability contribution
     const readability = data.technical?.readability_score || 50;
     score -= Math.abs(70 - readability) * 0.2; // optimal is 70
-    
+
     // Check keyword density
     const density = data.on_page?.keyword_density || 0;
     if (density < 0.5) score -= 10;
@@ -175,9 +175,9 @@ export default function DashboardPage() {
                 onChange={(e) => setKeyword(e.target.value)}
               />
             </div>
-            <Button 
-              type="submit" 
-              size="lg" 
+            <Button
+              type="submit"
+              size="lg"
               className="h-auto py-3.5 px-8 text-md font-semibold rounded-xl bg-primary hover:bg-primary/95 transition-all shadow-md shadow-primary/10 cursor-pointer lg:w-auto w-full"
               disabled={isLoading}
             >
@@ -211,7 +211,7 @@ export default function DashboardPage() {
       {/* Analysis Results Display */}
       {dataToUse && !isLoading && (
         <div className="flex flex-col space-y-8 animate-in fade-in-50 slide-in-from-bottom-6 duration-500">
-          
+
           {/* Dashboard Summary Card */}
           <Card className="border border-border/80 shadow-md bg-card/40 overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x">
@@ -222,13 +222,13 @@ export default function DashboardPage() {
                   {/* Circular background */}
                   <svg className="w-full h-full transform -rotate-90">
                     <circle cx="56" cy="56" r="46" strokeWidth="8" stroke="hsl(var(--muted))" fill="transparent" />
-                    <circle 
-                      cx="56" 
-                      cy="56" 
-                      r="46" 
-                      strokeWidth="8" 
+                    <circle
+                      cx="56"
+                      cy="56"
+                      r="46"
+                      strokeWidth="8"
                       stroke={overallScore >= 80 ? "rgb(16, 185, 129)" : overallScore >= 50 ? "rgb(245, 158, 11)" : "rgb(239, 68, 68)"}
-                      fill="transparent" 
+                      fill="transparent"
                       strokeDasharray={2 * Math.PI * 46}
                       strokeDashoffset={2 * Math.PI * 46 * (1 - overallScore / 100)}
                       className="transition-all duration-1000 ease-out"
@@ -297,7 +297,7 @@ export default function DashboardPage() {
 
           {/* Detailed Metrics Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
+
             {/* Technical SEO Overview */}
             <Card className="shadow-sm border border-border/70 hover:border-primary/20 transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
@@ -325,9 +325,9 @@ export default function DashboardPage() {
                       <span className="text-xs text-muted-foreground">/ {dataToUse.technical?.total_images} optimized</span>
                     </div>
                     <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-primary" 
-                        style={{ width: `${((dataToUse.technical?.total_images - dataToUse.technical?.missing_alt_images) / (dataToUse.technical?.total_images || 1)) * 100}%` }} 
+                      <div
+                        className="h-full bg-primary"
+                        style={{ width: `${((dataToUse.technical?.total_images - dataToUse.technical?.missing_alt_images) / (dataToUse.technical?.total_images || 1)) * 100}%` }}
                       />
                     </div>
                   </div>
@@ -345,9 +345,9 @@ export default function DashboardPage() {
                       <span className="text-xs text-muted-foreground">valid links</span>
                     </div>
                     <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-emerald-500" 
-                        style={{ width: `${((dataToUse.technical?.total_links - dataToUse.technical?.broken_links) / (dataToUse.technical?.total_links || 1)) * 100}%` }} 
+                      <div
+                        className="h-full bg-emerald-500"
+                        style={{ width: `${((dataToUse.technical?.total_links - dataToUse.technical?.broken_links) / (dataToUse.technical?.total_links || 1)) * 100}%` }}
                       />
                     </div>
                   </div>
@@ -364,9 +364,9 @@ export default function DashboardPage() {
                     </span>
                   </div>
                   <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-emerald-500 transition-all duration-1000 ease-out" 
-                      style={{ width: `${Math.min(dataToUse.technical?.readability_score || 0, 100)}%` }} 
+                    <div
+                      className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-emerald-500 transition-all duration-1000 ease-out"
+                      style={{ width: `${Math.min(dataToUse.technical?.readability_score || 0, 100)}%` }}
                     />
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed italic bg-card p-2.5 rounded-lg border border-border/50">
@@ -447,7 +447,7 @@ export default function DashboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6 space-y-8">
-              
+
               {/* Title Suggestions */}
               {dataToUse.on_page?.title_suggestions?.length > 0 && (
                 <div className="space-y-4">
