@@ -9,6 +9,8 @@ const api = axios.create({
   },
 });
 
+export const WebSocketUrl='ws://https://seo-analyzer-backend-one.vercel.app/api/v1'
+
 // Add a request interceptor to attach the access token
 api.interceptors.request.use(
   (config) => {

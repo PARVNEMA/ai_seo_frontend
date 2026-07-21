@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import api from "@/lib/api";
+import api, { WebSocketUrl } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,7 +52,7 @@ export default function LiveCrawlerPage() {
     }
 
     // Use ws for localhost:8000 since api base is http://localhost:8000/api/v1
-    const wsUrl = `ws://localhost:8000/api/v1/ws/crawls/${jobId}?token=${encodeURIComponent(token)}`;
+    const wsUrl = `${WebSocketUrl}/ws/crawls/${jobId}?token=${encodeURIComponent(token)}`;
     ws.current = new WebSocket(wsUrl);
 
     ws.current.onopen = () => {
