@@ -2,7 +2,8 @@ import axios from 'axios';
 
 // Create an Axios instance with base URL for the FastAPI backend
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api/v1',
+  // baseURL: 'http://localhost:8000/api/v1',
+  baseURL: 'https://seo-analyzer-backend-one.vercel.app/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
