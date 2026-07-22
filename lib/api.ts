@@ -3,13 +3,13 @@ import axios from 'axios';
 // Create an Axios instance with base URL for the FastAPI backend
 const api = axios.create({
   // baseURL: 'http://localhost:8000/api/v1',
-  baseURL: 'https://seo-analyzer-backend-one.vercel.app/api/v1',
+  baseURL: 'https://seo-analyzer-4n4u.onrender.com/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-export const WebSocketUrl='wss://seo-analyzer-backend-one.vercel.app/api/v1'
+export const WebSocketUrl='wss://seo-analyzer-4n4u.onrender.com/api/v1'
 
 // Add a request interceptor to attach the access token
 api.interceptors.request.use(
