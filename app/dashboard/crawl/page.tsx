@@ -37,7 +37,7 @@ interface PageResult {
 export default function LiveCrawlerPage() {
   const [targetUrl, setTargetUrl] = useState("");
   const [jobId, setJobId] = useState<string | null>(null);
-  const [status, setStatus] = useState<"idle" | "starting" | "running" | "completed" | "stopped" | "failed">("idle");
+  const [status, setStatus] = useState<"idle" | "starting" | "running" | "embeddings_generating" | "completed" | "stopped" | "failed" | "limit_reached" | "cancelled">("idle");
   const [results, setResults] = useState<PageResult[]>([]);
   const ws = useRef<WebSocket | null>(null);
 
@@ -65,10 +65,8 @@ export default function LiveCrawlerPage() {
         console.log("Received WebSocket message:", data);
         // Handle backend control/status messages
         if (data.status) {
-          if (data.status === "stopped") {
-            setStatus("stopped");
-          } else if (data.status === "completed") {
-            setStatus("completed");
+          if (["stopped", "completed", "embeddings_generating", "limit_reached", "cancelled"].includes(data.status)) {
+            setStatus(data.status as any);
           }
           return;
         }
@@ -163,13 +161,13 @@ export default function LiveCrawlerPage() {
                 className="pl-11 py-6 text-md rounded-xl bg-background/50 border-muted focus-visible:ring-primary/20"
                 value={targetUrl}
                 onChange={(e) => setTargetUrl(e.target.value)}
-                disabled={status === "running" || status === "starting"}
+                disabled={status === "running" || status === "starting" || status === "embeddings_generating"}
                 required
               />
             </div>
 
             <div className="flex gap-2 w-full md:w-auto">
-              {status === "running" ? (
+              {status === "running" || status === "embeddings_generating" ? (
                 <Button
                   variant="destructive"
                   onClick={stopCrawl}
@@ -211,10 +209,13 @@ export default function LiveCrawlerPage() {
                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Crawl Job Status</p>
                 <div className="flex items-center gap-2 mt-1.5">
                   {status === "running" && <span className="h-3 w-3 bg-blue-500 rounded-full animate-pulse" />}
-                  {status === "completed" && <span className="h-3 w-3 bg-emerald-500 rounded-full" />}
-                  {status === "stopped" && <span className="h-3 w-3 bg-amber-500 rounded-full" />}
+                  {status === "embeddings_generating" && <span className="h-3 w-3 bg-purple-500 rounded-full animate-pulse" />}
+                  {(status === "completed" || status === "limit_reached") && <span className="h-3 w-3 bg-emerald-500 rounded-full" />}
+                  {(status === "stopped" || status === "cancelled") && <span className="h-3 w-3 bg-amber-500 rounded-full" />}
                   {status === "failed" && <span className="h-3 w-3 bg-red-500 rounded-full" />}
-                  <span className="font-extrabold capitalize text-md text-foreground/90">{status}</span>
+                  <span className="font-extrabold capitalize text-md text-foreground/90">
+                    {status === "embeddings_generating" ? "Generating Embeddings..." : status.replace('_', ' ')}
+                  </span>
                 </div>
               </div>
               <div className="text-right">
