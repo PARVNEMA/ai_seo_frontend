@@ -189,13 +189,13 @@ export default function Home() {
             <Card className="relative overflow-hidden group hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-md">
               <CardHeader className="space-y-1">
                 <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform">
-                  <ShieldCheck className="h-6 w-6" />
+                  <MessageSquare className="h-6 w-6" />
                 </div>
-                <CardTitle className="text-xl">Trustworthy Security</CardTitle>
+                <CardTitle className="text-xl">RAG-Powered Website Q&A</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <CardDescription className="text-sm text-muted-foreground leading-relaxed">
-                  Your data and audit history are secured with advanced JWT tokens. We never scrape behind authenticated paywalls without permission.
+                  Query your crawled website data using natural language. Ask specific questions about site content and get instant semantic answers powered by RAG technology.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -404,6 +404,16 @@ export default function Home() {
               </h3>
               <p className="text-muted-foreground text-sm mt-2 pl-7">
                 Yes! You can specify any target keyword, including localized search tags (e.g. "best software company in jabalpur"), and the scraper will match competitor search lists.
+              </p>
+            </div>
+
+            <div className="p-6 border rounded-2xl bg-card/30">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <HelpCircle className="h-5 w-5 text-primary flex-shrink-0" />
+                How does the RAG-based website search work?
+              </h3>
+              <p className="text-muted-foreground text-sm mt-2 pl-7">
+                Once a website is crawled, we generate embeddings for all its pages. You can then ask conversational questions (e.g., "What are the pricing plans?"), and our AI will retrieve the exact context from the crawled data to give you an accurate answer.
               </p>
             </div>
           </div>
