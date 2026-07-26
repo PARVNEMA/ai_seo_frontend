@@ -50,7 +50,7 @@ export default function CrawlHistoryPage() {
     setIsLoading(true);
     try {
       const response = await api.get("/crawler/jobs");
-      
+
       // Assume the response is directly an array or inside a `data` key
       const fetchedJobs = Array.isArray(response.data) ? response.data : (response.data.jobs || []);
       setJobs(fetchedJobs);
@@ -91,10 +91,10 @@ export default function CrawlHistoryPage() {
             Ask questions, search content, and conduct AI RAG conversations with your crawled websites.
           </p>
         </div>
-        <Button 
-          onClick={fetchJobs} 
-          variant="outline" 
-          className="gap-2 rounded-xl py-5 hover:bg-muted/50 font-semibold cursor-pointer border border-border/80" 
+        <Button
+          onClick={fetchJobs}
+          variant="outline"
+          className="gap-2 rounded-xl py-5 hover:bg-muted/50 font-semibold cursor-pointer border border-border/80"
           disabled={isLoading}
         >
           <RefreshCcw className={`h-4.5 w-4.5 ${isLoading ? "animate-spin" : ""}`} />
@@ -141,7 +141,7 @@ export default function CrawlHistoryPage() {
                         <span>{formatDate(job.created_at)}</span>
                       </CardDescription>
                     </div>
-                    
+
                     <span className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full capitalize flex-shrink-0 border ${
                       job.status === "completed" ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" :
                       job.status === "failed" ? "bg-red-500/10 text-red-600 border-red-500/20" :
@@ -154,10 +154,10 @@ export default function CrawlHistoryPage() {
                 </CardHeader>
                 <CardContent className="mt-auto pt-4">
                   <div className="flex items-center justify-between text-sm">
-                    <div>
+                    {/* <div>
                       <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Pages Scanned</p>
                       <p className="font-extrabold text-lg mt-0.5 text-foreground/90">{job.pages_crawled || 0}</p>
-                    </div>
+                    </div> */}
                     <Link href={`/dashboard/history/${jobId}`}>
                       <Button variant="ghost" className="group-hover:text-primary transition-colors gap-1.5 text-xs font-bold" size="sm">
                         <MessageSquareText className="h-3.5 w-3.5 text-primary" />
