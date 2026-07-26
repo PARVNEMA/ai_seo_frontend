@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, LayoutDashboard, LogOut, User, Globe, History, ChevronRight } from "lucide-react";
+import { Activity, LayoutDashboard, LogOut, Globe, FileSearch, ChevronRight } from "lucide-react";
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -21,18 +21,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     },
     {
       href: "/dashboard/history",
-      label: "Crawl History",
-      icon: History,
+      label: "Find in Website",
+      icon: FileSearch,
     },
   ];
 
-  const bottomLinks = [
-    {
-      href: "/profile",
-      label: "Profile",
-      icon: User,
-    },
-  ];
+  const bottomLinks: { href: string; label: string; icon: any }[] = [];
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">

@@ -25,7 +25,7 @@ export default function ChatWithWebsitePage() {
     {
       id: "welcome-msg",
       role: "assistant",
-      content: "Hello! I am ready to answer any questions about the website you just scraped. What would you like to know?",
+      content: "Hello! I have loaded the RAG vector embeddings for this website. Ask any question to find information across all crawled pages!",
     }
   ]);
   const [input, setInput] = useState("");
@@ -96,10 +96,10 @@ export default function ChatWithWebsitePage() {
           <div>
             <h1 className="text-2xl font-black flex items-center gap-2 text-foreground/90">
               <Sparkles className="h-5 w-5 text-primary" />
-              <span>Chat with Site Data</span>
+              <span>Find & Chat in Website</span>
             </h1>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Query semantic content scraped under Job ID: <span className="font-mono bg-muted px-1.5 py-0.5 rounded text-[10px] border border-border/80">{jobId}</span>
+              Conversational RAG search & Q&A across site vector index (Job ID: <span className="font-mono bg-muted px-1.5 py-0.5 rounded text-[10px] border border-border/80">{jobId}</span>)
             </p>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function ChatWithWebsitePage() {
             <div className="flex flex-col max-w-[80%] items-start">
               <div className="px-4.5 py-3 rounded-2xl bg-card border border-border/80 shadow-sm rounded-tl-sm text-card-foreground flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                <span className="text-xs text-muted-foreground animate-pulse font-medium">Analyzing document vectors...</span>
+                <span className="text-xs text-muted-foreground animate-pulse font-medium">Searching RAG vector database & generating response...</span>
               </div>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function ChatWithWebsitePage() {
                 <MessageSquare className="h-4.5 w-4.5 text-muted-foreground ml-0.5" />
               </div>
               <Input
-                placeholder="Ask about pages, links, headers, or alt text gaps..."
+                placeholder="Ask a question or search for anything on this website..."
                 className="flex-1 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent text-sm"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}

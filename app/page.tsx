@@ -1,18 +1,18 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  ArrowRight, 
-  CheckCircle2, 
-  LineChart, 
-  Search, 
-  Zap, 
-  Globe, 
-  ShieldCheck, 
-  Sparkles, 
-  BarChart3, 
-  ArrowUpRight, 
-  Users, 
+import {
+  ArrowRight,
+  CheckCircle2,
+  LineChart,
+  Search,
+  Zap,
+  Globe,
+  ShieldCheck,
+  Sparkles,
+  BarChart3,
+  ArrowUpRight,
+  Users,
   HelpCircle,
   History,
   FileSearch,
@@ -65,7 +65,7 @@ export default function Home() {
                 <p className="text-xs md:text-sm text-muted-foreground font-medium mt-1">Audit Accuracy</p>
               </div>
               <div className="text-center">
-                <h3 className="text-3xl md:text-4xl font-bold tracking-tight text-primary">12M+</h3>
+                <h3 className="text-3xl md:text-4xl font-bold tracking-tight text-primary">1200+</h3>
                 <p className="text-xs md:text-sm text-muted-foreground font-medium mt-1">Pages Crawled</p>
               </div>
               <div className="text-center">
@@ -73,7 +73,7 @@ export default function Home() {
                 <p className="text-xs md:text-sm text-muted-foreground font-medium mt-1">Average Traffic Boost</p>
               </div>
               <div className="text-center">
-                <h3 className="text-3xl md:text-4xl font-bold tracking-tight text-primary">&lt;60s</h3>
+                <h3 className="text-3xl md:text-4xl font-bold tracking-tight text-primary">&lt;120s</h3>
                 <p className="text-xs md:text-sm text-muted-foreground font-medium mt-1">Average Scan Time</p>
               </div>
             </div>
@@ -297,7 +297,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="w-full py-20 md:py-28 bg-muted/20 border-t">
+      {/* <section className="w-full py-20 md:py-28 bg-muted/20 border-t">
         <div className="container px-4 md:px-6 max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="font-bold text-3xl sm:text-4xl tracking-tight">Approved by SEO Professionals</h2>
@@ -366,7 +366,7 @@ export default function Home() {
             </Card>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Frequently Asked Questions */}
       <section className="w-full py-20 md:py-28 bg-background border-t">

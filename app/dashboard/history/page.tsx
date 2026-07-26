@@ -6,7 +6,7 @@ import api from "@/lib/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { History, Globe, Calendar, ArrowRight, RefreshCcw, LayoutDashboard, AlertCircle, Database } from "lucide-react";
+import { FileSearch, Globe, Calendar, ArrowRight, RefreshCcw, LayoutDashboard, AlertCircle, Database, MessageSquareText } from "lucide-react";
 
 interface CrawlJob {
   job_id?: string;
@@ -54,10 +54,10 @@ export default function CrawlHistoryPage() {
       // Assume the response is directly an array or inside a `data` key
       const fetchedJobs = Array.isArray(response.data) ? response.data : (response.data.jobs || []);
       setJobs(fetchedJobs);
-      toast.success("History refreshed");
+      toast.success("Site list refreshed");
     } catch (error) {
       console.error(error);
-      toast.error("Failed to load history from backend. Showing demo data.");
+      toast.error("Failed to load indexed sites from backend. Showing demo data.");
       setJobs(mockJobs);
     } finally {
       setIsLoading(false);
@@ -85,10 +85,10 @@ export default function CrawlHistoryPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight mb-2 bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
-            Crawl History
+            Find in Website
           </h1>
           <p className="text-muted-foreground text-sm">
-            Review past website crawls, their execution status, and audit summaries.
+            Ask questions, search content, and conduct AI RAG conversations with your crawled websites.
           </p>
         </div>
         <Button 
@@ -113,13 +113,13 @@ export default function CrawlHistoryPage() {
       ) : jobs.length === 0 ? (
         <Card className="flex flex-col items-center justify-center p-16 border-dashed border-2 border-muted text-center max-w-md mx-auto rounded-3xl bg-card/40">
           <Database className="h-14 w-14 text-muted-foreground mb-4 opacity-40" />
-          <CardTitle className="text-xl font-bold mb-2">No Crawl Records</CardTitle>
+          <CardTitle className="text-xl font-bold mb-2">No Indexed Websites</CardTitle>
           <CardDescription className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-6">
-            You haven't run any website crawler sessions yet. Start a new scan to track page optimizations.
+            You haven't crawled any websites yet. Launch a new crawl to generate RAG embeddings and start asking questions.
           </CardDescription>
           <Link href="/dashboard/crawl">
             <Button className="rounded-xl font-semibold cursor-pointer px-6">
-              Launch Crawler
+              Crawl a Website
             </Button>
           </Link>
         </Card>
@@ -160,7 +160,8 @@ export default function CrawlHistoryPage() {
                     </div>
                     <Link href={`/dashboard/history/${jobId}`}>
                       <Button variant="ghost" className="group-hover:text-primary transition-colors gap-1.5 text-xs font-bold" size="sm">
-                        <span>Analyze Reports</span>
+                        <MessageSquareText className="h-3.5 w-3.5 text-primary" />
+                        <span>Find & RAG Chat</span>
                         <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
                       </Button>
                     </Link>
