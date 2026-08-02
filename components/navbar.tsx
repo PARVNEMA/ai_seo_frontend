@@ -7,21 +7,21 @@ import { LogOut, Activity } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
 
+import { getStoredToken, logout } from "@/lib/auth";
+
 export function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    // Basic check for token in localStorage
-    const token = localStorage.getItem("access_token");
+    // Check if token is present in localStorage
+    const token = getStoredToken();
     setIsAuthenticated(!!token);
   }, [pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
+    logout();
     setIsAuthenticated(false);
-    window.location.href = "/login";
   };
 
   return (

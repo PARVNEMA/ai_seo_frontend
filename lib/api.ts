@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getStoredToken, logout } from './auth';
 
 // Create an Axios instance with base URL for the FastAPI backend
 const api = axios.create({
@@ -17,7 +18,7 @@ api.interceptors.request.use(
   (config) => {
     // Check if we are in a browser environment (localStorage is available)
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('access_token');
+      const token = getStoredToken();
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -36,11 +37,11 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       // Clear token and redirect to login if unauthorized
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        // We can redirect to login page if needed
         if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
-           window.location.href = '/login';
+           logout();
+        } else {
+           localStorage.removeItem('access_token');
+           localStorage.removeItem('refresh_token');
         }
       }
     }

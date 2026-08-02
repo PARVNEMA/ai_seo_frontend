@@ -1,12 +1,22 @@
 "use client"
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Activity, LayoutDashboard, LogOut, Globe, FileSearch, ChevronRight } from "lucide-react";
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { getStoredToken, logout } from "@/lib/auth";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = getStoredToken();
+    if (!token) {
+      router.push("/login");
+    }
+  }, [pathname, router]);
 
   const links = [
     {
@@ -91,11 +101,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               );
             })}
             <button
-              onClick={() => {
-                localStorage.removeItem("access_token");
-                localStorage.removeItem("refresh_token");
-                window.location.href = "/login";
-              }}
+              onClick={logout}
               className="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-500 hover:bg-red-500/10 transition-all duration-200 cursor-pointer"
             >
               <LogOut className="h-4.5 w-4.5" />

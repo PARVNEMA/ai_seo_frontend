@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import api, { WebSocketUrl } from "@/lib/api";
+import { getStoredToken } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,7 +45,7 @@ export default function LiveCrawlerPage() {
   useEffect(() => {
     if (!jobId) return;
 
-    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+    const token = getStoredToken();
     if (!token) {
       toast.error("Authentication token not found. Please log in again.");
       setStatus("failed");
