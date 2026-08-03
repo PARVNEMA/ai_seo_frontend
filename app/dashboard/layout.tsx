@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Activity, LayoutDashboard, LogOut, Globe, FileSearch, ChevronRight } from "lucide-react";
+import { Activity, LayoutDashboard, LogOut, Globe, FileSearch, ChevronRight, Scale } from "lucide-react";
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { getStoredToken, logout } from "@/lib/auth";
@@ -23,6 +23,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       href: "/dashboard",
       label: "Analyze Graph",
       icon: LayoutDashboard,
+    },
+    {
+      href: "/dashboard/competitors",
+      label: "Compare vs Competitor",
+      icon: Scale,
     },
     {
       href: "/dashboard/crawl",
