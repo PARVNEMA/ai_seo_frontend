@@ -40,7 +40,7 @@ export default function LoginPage() {
       localStorage.setItem("refresh_token", refresh_token);
 
       toast.success("Successfully logged in!");
-      
+
       // We can redirect to the dashboard or home
       router.push("/dashboard");
     } catch (error) {
@@ -57,7 +57,7 @@ export default function LoginPage() {
         <Activity className="h-8 w-8 text-primary" />
         <span className="font-bold text-2xl">AI SEO Optimizer</span>
       </Link>
-      
+
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
@@ -77,12 +77,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <Link href="#" className="text-sm font-medium text-primary hover:underline">
-                  Forgot password?
-                </Link>
-              </div>
+
               <Input
                 id="password"
                 type="password"

@@ -6,7 +6,7 @@ import api from "@/lib/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { FileSearch, Globe, Calendar, ArrowRight, RefreshCcw, LayoutDashboard, AlertCircle, Database, MessageSquareText } from "lucide-react";
+import { FileSearch, Globe, Calendar, ArrowRight, RefreshCcw, LayoutDashboard, AlertCircle, Database, MessageSquareText, Trash2, Loader2, AlertTriangle } from "lucide-react";
 
 interface CrawlJob {
   job_id?: string;
@@ -45,6 +45,8 @@ const mockJobs: CrawlJob[] = [
 export default function CrawlHistoryPage() {
   const [jobs, setJobs] = useState<CrawlJob[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deletingJobId, setDeletingJobId] = useState<string | null>(null);
+  const [confirmDeleteJob, setConfirmDeleteJob] = useState<CrawlJob | null>(null);
 
   const fetchJobs = async () => {
     setIsLoading(true);
@@ -67,6 +69,24 @@ export default function CrawlHistoryPage() {
   useEffect(() => {
     fetchJobs();
   }, []);
+
+  const handleDeleteJob = async (jobId: string) => {
+    setDeletingJobId(jobId);
+    try {
+      await api.delete("/chat/", {
+        data: { job_id: jobId }
+      });
+      setJobs((prev) => prev.filter((job) => (job.job_id || job.id) !== jobId));
+      toast.success("Website data deleted successfully");
+      setConfirmDeleteJob(null);
+    } catch (error: any) {
+      console.error("Delete error:", error);
+      const errorMsg = error?.response?.data?.detail || error?.response?.data?.message || "Failed to delete website data";
+      toast.error(errorMsg);
+    } finally {
+      setDeletingJobId(null);
+    }
+  };
 
   const formatDate = (dateString: string) => {
     try {
@@ -142,22 +162,29 @@ export default function CrawlHistoryPage() {
                       </CardDescription>
                     </div>
 
-                    <span className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full capitalize flex-shrink-0 border ${
-                      job.status === "completed" ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" :
-                      job.status === "failed" ? "bg-red-500/10 text-red-600 border-red-500/20" :
-                      job.status === "running" ? "bg-blue-500/10 text-blue-600 border-blue-500/20 animate-pulse" :
-                      "bg-amber-500/10 text-amber-600 border-amber-500/20"
-                    }`}>
-                      {job.status}
-                    </span>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full capitalize border ${
+                        job.status === "completed" ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" :
+                        job.status === "failed" ? "bg-red-500/10 text-red-600 border-red-500/20" :
+                        job.status === "running" ? "bg-blue-500/10 text-blue-600 border-blue-500/20 animate-pulse" :
+                        "bg-amber-500/10 text-amber-600 border-amber-500/20"
+                      }`}>
+                        {job.status}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setConfirmDeleteJob(job)}
+                        className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
+                        title="Delete website data"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="mt-auto pt-4">
                   <div className="flex items-center justify-between text-sm">
-                    {/* <div>
-                      <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Pages Scanned</p>
-                      <p className="font-extrabold text-lg mt-0.5 text-foreground/90">{job.pages_crawled || 0}</p>
-                    </div> */}
                     <Link href={`/dashboard/history/${jobId}`}>
                       <Button variant="ghost" className="group-hover:text-primary transition-colors gap-1.5 text-xs font-bold" size="sm">
                         <MessageSquareText className="h-3.5 w-3.5 text-primary" />
@@ -172,6 +199,55 @@ export default function CrawlHistoryPage() {
           })}
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      {confirmDeleteJob && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 p-4">
+          <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 text-red-500">
+              <div className="p-2.5 rounded-xl bg-red-500/10">
+                <AlertTriangle className="h-6 w-6" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground">Delete Crawled Website</h3>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Are you sure you want to delete <span className="font-semibold text-foreground">{confirmDeleteJob.target_url}</span>? This will permanently remove all indexed pages and chat embeddings for this website.
+            </p>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => setConfirmDeleteJob(null)}
+                disabled={deletingJobId !== null}
+                className="rounded-xl font-semibold cursor-pointer"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  const jobId = confirmDeleteJob.job_id || confirmDeleteJob.id;
+                  if (jobId) handleDeleteJob(jobId);
+                }}
+                disabled={deletingJobId !== null}
+                className="rounded-xl font-semibold cursor-pointer gap-2 bg-red-600 hover:bg-red-700 text-white"
+              >
+                {deletingJobId ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4" />
+                    <span>Delete</span>
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
